@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'voting.apps.VotingConfig',
     'administrator.apps.AdministratorConfig',
+    'theme_soft_design',
 ]
 
 MIDDLEWARE = [
@@ -135,7 +136,11 @@ STATICFILES_DIRS = [
 ]
 
 AUTH_USER_MODEL = 'User.CustomUser'
+
 AUTHENTICATION_BACKENDS = ['user.email_backend.EmailBackend']
+LOGIN_REDIRECT_URL = '/'
+    # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ELECTION_TITLE_PATH = os.path.join(
     BASE_DIR, 'election_title.txt')  # Election Title File

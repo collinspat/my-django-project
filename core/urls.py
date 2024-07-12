@@ -22,4 +22,6 @@ urlpatterns = [
     path('users/',include('users.urls')),
     path('admin/', admin.site.urls),
     path('voting/',include('voting.urls')), 
+    path('administrator/',include('administrator.urls')),
+    path('theme/',include('theme_soft_design.urls')),
 ]
