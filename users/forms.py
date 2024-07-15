@@ -5,14 +5,13 @@ from .models import *
 class FormSettings(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FormSettings, self).__init__(*args, **kwargs)
-        # Here make some changes such as:
         for field in self.visible_fields():
             field.field.widget.attrs['class'] = 'form-control'
 
-
+#so basically the custom user form handles creation and updating of user instances 
 class CustomUserForm(FormSettings):
     email = forms.EmailField(required=True)
-    # email = forms.EmailField(required=True)
+    # email = forms.EmailField(required=True)..it will not work if this is not the case 
     password = forms.CharField(widget=forms.PasswordInput)
 
     widget = {
@@ -32,21 +31,23 @@ class CustomUserForm(FormSettings):
             self.fields['first_name'].required = True
             self.fields['last_name'].required = True
 
+#the email checks our database if the email exits it flags it as email is required to be unique for each voter 
     def clean_email(self, *args, **kwargs):
         formEmail = self.cleaned_data['email'].lower()
         if self.instance.pk is None:  # Insert
             if CustomUser.objects.filter(email=formEmail).exists():
                 raise forms.ValidationError(
                     "The given email is already registered")
-        else:  # Update
+        else:  
+
             dbEmail = self.Meta.model.objects.get(
                 id=self.instance.pk).email.lower()
-            if dbEmail != formEmail:  # There has been changes
+            if dbEmail != formEmail:  
                 if CustomUser.objects.filter(email=formEmail).exists():
                     raise forms.ValidationError(
                         "The given email is already registered")
         return formEmail
-
+#from what i learned the clean password validates the password field 
     def clean_password(self):
         password = self.cleaned_data.get("password", None)
         if self.instance.pk is not None:

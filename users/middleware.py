@@ -6,9 +6,9 @@ from django.contrib import messages
 class AccountCheckMiddleWare(MiddlewareMixin):
     def process_view(self, request, view_func, view_args, view_kwargs):
         modulename = view_func.__module__
-        user = request.user  # Who is the current user ?
+        user = request.user  # checks who the user is so that it can decide what they are allowed to see 
         if user.is_authenticated:
-            if user.user_type == '1':  # Admin
+            if user.user_type == '1':  # Administrator 
                 if modulename == 'voting.views':
                     error = True
                     if request.path == reverse('fetch_ballot'):
@@ -22,10 +22,10 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                     messages.error(
                         request, "You do not have access to this resource")
                     return redirect(reverse('voterDashboard'))
-            else:  # None of the aforementioned ? Please take the user to login page
+            else:  #if you are not a voter or admin it means you first need to register at the login page 
                 return redirect(reverse('account_login'))
         else:
-            # If the path is login or has anything to do with authentication, pass
+            
             if request.path == reverse('account_login') or request.path == reverse('account_register') or modulename == 'django.contrib.auth.views' or request.path == reverse('account_login'):
                 pass
             elif modulename == 'administrator.views' or modulename == 'voting.views':
